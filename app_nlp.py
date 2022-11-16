@@ -1,11 +1,14 @@
 from flask import Flask, request, jsonify, render_template
 import pickle
 
+import pandas as pd
+from sklearn import preprocessing
+
 
 app = Flask(__name__)
-model = pickle.load(open('nlp_model.pkl', 'rb'))
-vocabulary = pickle.load(open('knowledgebase_vocabulary.pkl', 'rb'))
-intent_names = pickle.load(open('intent_names.pkl', 'rb'))
+model = pickle.load(open('data.pkl', 'rb'))
+vocabulary = pickle.load(open('vocabulary.pkl', 'rb'))
+intent_names = pickle.load(open('tag_name.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -19,6 +22,7 @@ def predict():
     '''
     user_utterance = [x for x in request.form.values()]
     utterance_vect = vocabulary.transform(user_utterance)
+    
     output = model.predict(utterance_vect)
     prediction = intent_names[output]
     return render_template('index.html', prediction_text=' Intent Recognized: {}'.format(prediction[0]))
