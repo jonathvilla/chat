@@ -9,25 +9,109 @@
 <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.0.0/mdb.min.css"
+  rel="stylesheet"
+/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   
 </head>
 
 <body>
- <div class="login">
-	<h1>¿En que te puedo ayudar?</h1>
 
-     <!-- Main Input For Receiving Query to our ML -->
-    <form action="{{ url_for('predict')}}"method="post">
-    	<input type="text" name="experience" placeholder="Escribe una pregunta" required="required" />
-        <button type="submit" class="btn btn-primary btn-block btn-large">Enviar</button>
-    </form>
+  <section style="background-color: #eee;">
+    <div class="container py-5">
+  
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-4">
+  
+          <div class="card" id="chat1" style="border-radius: 15px;">
+            <div
+              class="card-header d-flex justify-content-between align-items-center p-3 bg-info text-white border-bottom-0"
+              style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+              <i class="fas fa-angle-left"></i>
+              <p class="mb-0 fw-bold">Como te puedo ayudar</p>
+              <i class="fas fa-times"></i>
+            </div>
+            <div class="card-body">
+  
+              
+              <ul id="myUL">
+            </ul>
+  
+              <div class="form-outline">
+                  <input type="text" name="experience" id="myInput" placeholder="Escribe una pregunta" required="required" />
+              </div>
+              <button  type="button" class="btn btn-primary btn-block btn-large"  onclick="request()" >Enviar</button>
+  
+            </div>
+          </div>
+  
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  <script>
+    function request() {
+      var name = document.getElementById("myInput").value;
+      const dataString = {
+        name: name,
+      }
+      $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:5000/predict",
+        data: dataString,
+        success: function(result) {
+          console.log(result);
+          newElement();
+          newElementBot(result)
+        }
+      });
+    }
+    
+// Create a new list item when clicking on the "Add" button
+function newElement() {
+  var li = document.createElement("p");
+  var inputValue = document.getElementById("myInput").value;
+  li.innerHTML +='<div class="d-flex flex-row justify-content-end mb-4">'+
+    '<div class="p-3 me-3 border" style="border-radius: 15px; background-color: #fbfbfb;">'+
+      '<p class="small mb-0">'+inputValue+'</p>'+
+    '</div>'+
+    '<img src="https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Photos.png" alt="avatar 1" style="width: 50px; height: 100%;">'+
+  '</div>';
+  
+  if (inputValue === '') {
+    alert("You must write something!");
+  } else {
+    document.getElementById("myUL").appendChild(li);
+  }
+  document.getElementById("myInput").value = "";
 
-   <br>
-   <br>
-   {{ prediction_text }}
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function() {
+      var div = this.parentElement;
+      div.style.display = "none";
+    }
+  } 
+}
+function newElementBot(result) {
+  var li = document.createElement("p");
+  li.innerHTML +='<div class="d-flex flex-row justify-content-start mb-4">'+
+    '<img src="https://w7.pngwing.com/pngs/917/15/png-transparent-chatbot-facebook-messenger-internet-bot-artificial-intelligence-instant-messaging-chat-miscellaneous-blue-text-thumbnail.png" alt="avatar 1" style="width: 45px; height: 100%;">'+
+    '<div class="p-3 ms-3" style="border-radius: 15px; background-color: rgba(57, 192, 237,.2);"><p class="small mb-0">'+result+'</p></div></div>';
+  
+    document.getElementById("myUL").appendChild(li);
 
- </div>
-
-
+  for (i = 0; i < close.length; i++) {
+    close[i].onclick = function() {
+      var div = this.parentElement;
+      div.style.display = "none";
+    }
+  } 
+}
+    </script>
 </body>
 </html>
+
+
